@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import react from 'react';
+import { useNavigation } from '@react-navigation/native'; // Make sure to import this
+import { useState } from 'react';
 import CustomInputs from "../components/customInputs/customInputs";
-import { ImageBackground, StyleSheet, View, Button, Dimensions,useWindowDimensions,
-  ScrollView,} from "react-native";
-import Header from "../components/header";
-import { TextInput } from "react-native-gesture-handler";
+import { ImageBackground, StyleSheet, View, Button, Dimensions,
+  } from "react-native";
 import CustomButton from "../components/customButtons/customButtons";
 
  
@@ -21,12 +21,12 @@ export default function Home({navigation}) {
 
   const onSignInPressed = () => {
     // validate user
-    navigation.navigate('Audio Record');
+    navigation.navigate('Record');
   };
 
   
   const onSignUpPress = () => {
-    navigation.navigate('SignUp');
+    navigation.navigate('SignUpScreen');
   };
 
 

@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native'; // Make sure to import thisimport React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import CustomInput from '../components/customInputs/customInputs';
 import CustomButton from '../components/customButtons/customButtons';
-import {useNavigation} from '@react-navigation/core';
 
-const SignUpScreen = () => {
+export default function SignUpScreen() {
+  const navigation = useNavigation(); // Use the hook to get the navigation object
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
-
-  const navigation = useNavigation();
 
   const onRegisterPressed = () => {
     navigation.navigate('ConfirmEmail');
@@ -18,7 +18,6 @@ const SignUpScreen = () => {
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
-
   };
 
 
@@ -47,9 +46,6 @@ const SignUpScreen = () => {
         />
 
         <CustomButton text="Register" onPress={onRegisterPressed} />
-
-    
-
       
 
         <CustomButton
@@ -82,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen;
+

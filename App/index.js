@@ -1,15 +1,12 @@
-import 'react-native-gesture-handler';
-import React from "react";
+import React from 'react';
+
+import AppNavigator from './routes/createStackNavigator';
 
 
-
-import Navigator from './routes/homeStacks'
-import Record from './screens/record';
 export default function Page() {
-
   return (
-        <Record/>
-    
+  
+      <AppNavigator/>
+
   );
 }
-

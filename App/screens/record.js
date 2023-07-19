@@ -1,7 +1,8 @@
+import { useNavigation } from '@react-navigation/native'; // Make sure to import this
 import { Audio } from 'expo-av';
 import { PermissionsAndroid } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity,Button } from 'react-native';
 import Timer from 'react-native-timer';
 
 export default function Record() {
@@ -25,14 +26,16 @@ export default function Record() {
         const recordingObject = new Audio.Recording();
         await recordingObject.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
         setRecording(recordingObject);
+        return recordingObject; // Add this line to return the recording object
       }
     } catch (error) {
       console.error('Error preparing recording:', error);
     }
   };
+  
 
   const startRecording = async () => {
-    await prepareRecording();
+    const recordingObject = await prepareRecording();
     try {
       const permission = await Audio.requestPermissionsAsync();
 
@@ -42,15 +45,19 @@ export default function Record() {
           playsInSilentModeIOS: true,
         });
 
-        await recording.startAsync();
+        await recordingObject.startAsync();
         setIsRecording(true);
 
-        // Start the recording timer to update the recording duration
-        Timer.setInterval('recordingTimer', () => {
-          recording.getStatusAsync().then((status) => {
+        // Start updating the recording duration
+        setRecordingDuration(0);
+        const intervalId = Timer.setInterval('recordingTimer', () => {
+          recordingObject.getStatusAsync().then((status) => {
             setRecordingDuration(status.durationMillis / 1000);
           });
         }, 1000);
+
+        // Store the intervalId in the recordingObject to clear it later
+        recordingObject.intervalId = intervalId;
       } else {
         setMessage('Please grant permission to the app to access the microphone');
       }
@@ -62,24 +69,41 @@ export default function Record() {
   const stopRecording = async () => {
     try {
       if (recording) {
+        setIsRecording(false);
+
+        // Stop the recording and get the recorded data
         await recording.stopAndUnloadAsync();
-        
+        const recordedData = await recording.getURI();
+
+        // Clear the recording timer
+        if (recording.intervalId) {
+          Timer.clearInterval(recording.intervalId);
+        }
+
+        // Create a new Audio.Sound object from the recorded data
+        const { sound } = await Audio.Sound.createAsync({ uri: recordedData });
 
         // Create a new recording object and save it to the recordings state
         const newRecording = {
           duration: formatTime(recordingDuration),
-          file: recording.getURI(),
-        
+          file: recordedData,
+          sound: sound,
         };
         setRecordings([...recordings, newRecording]);
 
-        setIsRecording(false);
         setRecordingDuration(0);
         setRecording(null);
       }
     } catch (err) {
       console.error('Failed to stop recording:', err);
     }
+  };
+  
+  const deleteRecording = (index) => {
+    // Create a new array without the recordingLine to be deleted
+    const updatedRecordings = [...recordings];
+    updatedRecordings.splice(index, 1);
+    setRecordings(updatedRecordings);
   };
 
   function getRecordingsLines() {
@@ -88,43 +112,16 @@ export default function Record() {
         <View key={index} style={styles.row}>
           <Text style={styles.fill}>Recording {index + 1} - {recordingLine.duration}</Text>
           <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title="Play"></Button>
-          <Button style={styles.button} onPress={() => Sharing.shareAsync(recordingLine.file)} title="Share"></Button>
+          <Button style={styles.button} onPress={() => deleteRecording(index)} title="Delete"></Button>
         </View>
       );
     });
   }
   
-  const playRecordedAudio = async () => {
-    try {
-      if (recordedAudioPath) {
-        hn;{ uri: recordedAudioPath };
-        await sound.playAsync();
-        setIsPlaying(true);
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-          }
-        });
-        console.log('Playing recorded audio:', recordedAudioPath);
-      }
-    } catch (err) {
-      console.error('Failed to play recorded audio:', err);
-    }
-  };
+  
+  
 
-  const deleteRecordedAudio = async () => {
-    try {
-      if (recordedAudioPath) {
-        const { sound } = await Audio.Sound.createAsync({ uri: recordedAudioPath });
-        await sound.unloadAsync();
-        await audioRecorderPlayer.removeRecordFile(recordedAudioPath);
-        setRecordedAudioPath('');
-        console.log('Recorded audio deleted.');
-      }
-    } catch (err) {
-      console.error('Failed to delete recorded audio:', err);
-    }
-  };
+  
 
   // Helper function to format the time in seconds to "mm:ss" format
   const formatTime = (seconds) => {
@@ -134,21 +131,15 @@ export default function Record() {
   };
 
   return (
-    <View style={styles.container}>
-      
+    <View style={styles.container}>      
       <Text style={styles.titleText}>Recording Duration: {formatTime(recordingDuration)}</Text>
       <TouchableOpacity onPress={startRecording}>
         <Text style={styles.titleText}>Start Recording</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={stopRecording}>
         <Text style={styles.titleText}>Stop Recording</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={playRecordedAudio}>
-        <Text style={styles.titleText}>{isPlaying ? 'Stop Audio' : 'Play Recorded Audio'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={deleteRecordedAudio}>
-        <Text style={styles.titleText}>Delete Recorded Audio</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>    
+      
       {getRecordingsLines()}
     </View>
   );
