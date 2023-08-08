@@ -111,18 +111,16 @@ export default function Record() {
       return (
         <View key={index} style={styles.row}>
           <Text style={styles.fill}>Recording {index + 1} - {recordingLine.duration}</Text>
-          <Button style={styles.button} onPress={() => recordingLine.sound.replayAsync()} title="Play"></Button>
-          <Button style={styles.button} onPress={() => deleteRecording(index)} title="Delete"></Button>
+          <TouchableOpacity onPress={() => recordingLine.sound.replayAsync()} style={styles.playButton}>
+            <Text style={styles.buttonText}>Play</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteRecording(index)} style={styles.deleteButton}>
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
         </View>
       );
     });
   }
-  
-  
-  
-
-  
-
   // Helper function to format the time in seconds to "mm:ss" format
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -133,12 +131,15 @@ export default function Record() {
   return (
     <View style={styles.container}>      
       <Text style={styles.titleText}>Recording Duration: {formatTime(recordingDuration)}</Text>
-      <TouchableOpacity onPress={startRecording}>
-        <Text style={styles.titleText}>Start Recording</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={stopRecording}>
-        <Text style={styles.titleText}>Stop Recording</Text>
-      </TouchableOpacity>    
+      {isRecording ? (
+        <TouchableOpacity onPress={stopRecording} style={styles.stopButton}>
+          <Text style={styles.buttonText}>Stop</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={startRecording} style={styles.startButton}>
+          <Text style={styles.buttonText}>Start</Text>
+        </TouchableOpacity>
+      )}
       
       {getRecordingsLines()}
     </View>
@@ -163,5 +164,39 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 18,
+  },
+  startButton: {
+    backgroundColor: 'red', // Customize the color
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 10,
+    borderRadius:50
+  },
+  stopButton: {
+    backgroundColor: 'red', // Customize the color
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 10,
+    borderRadius:50
+  },
+  buttonText: {
+    color: 'white', // Customize the text color
+    fontSize: 18,
+  },
+  playButton: {
+    backgroundColor: '#2196F3', // Customize the color
+    padding: 5,
+    borderRadius: 4,
+    marginHorizontal: 5,
+  },
+  deleteButton: {
+    backgroundColor: '#FF0000', // Customize the color
+    padding: 5,
+    borderRadius: 4,
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: 'white', // Customize the text color
+    fontSize: 14,
   },
 });
