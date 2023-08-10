@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/home';
 import SignUpScreen from '../screens/signUpScreen';
 import Record from '../screens/record';
+import Recordings from '../screens/recordings';
 
 
 
@@ -13,9 +14,10 @@ const AppNavigator = () => {
   return (
   
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Record" component={Record} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+        <Stack.Screen name="Record" component={Record}/>
+        <Stack.Screen name="Recordings" component={Recordings} />
       </Stack.Navigator>
 
   );
