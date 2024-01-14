@@ -1,31 +1,48 @@
-import { useState } from 'react';
-import { useNavigation } from '@react-navigation/native'; // Make sure to import thisimport React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import CustomInput from '../components/customInputs/customInputs';
-import CustomButton from '../components/customButtons/customButtons';
 
 export default function SignUpScreen() {
-  const navigation = useNavigation(); // Use the hook to get the navigation object
+  const navigation = useNavigation();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
 
-  const onRegisterPressed = () => {
-    navigation.navigate('ConfirmEmail');
+  const onRegisterPressed = async () => {
+    // Assuming validation passes, store user details in AsyncStorage
+    try {
+      const userDetails = {
+        username,
+        email,
+        password,
+      };
+
+      // Convert userDetails to JSON string before storing
+      const userDetailsJSON = JSON.stringify(userDetails);
+
+      // Store user details in AsyncStorage
+      await AsyncStorage.setItem('userDetails', userDetailsJSON);
+
+      console.log('User details stored successfully');
+      navigation.navigate('SignIn');
+    } catch (error) {
+      console.error('Error storing user details:', error);
+    }
   };
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
   };
 
-
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Text style={styles.title}>Create an account</Text>
+    <View style={styles.root}>
+      <Text style={styles.title}>Create an account</Text>
 
+      <View style={styles.form}>
         <CustomInput
           placeholder="Username"
           value={username}
@@ -45,23 +62,27 @@ export default function SignUpScreen() {
           secureTextEntry
         />
 
-        <CustomButton text="Register" onPress={onRegisterPressed} />
-      
+        <TouchableOpacity
+          onPress={onRegisterPressed}
+          style={styles.registerButton}
+        >
+          <Text style={{ color: 'white' }}>Register</Text>
+        </TouchableOpacity>
 
-        <CustomButton
-          text="Have an account? Sign in"
-          onPress={onSignInPress}
-          type="TERTIARY"
-        />
+        <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
+          <Text style={{ color: '#FDB075' }}>Have an account? Sign in</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   root: {
+    flex: 1,
+    backgroundColor: 'red',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -69,13 +90,19 @@ const styles = StyleSheet.create({
     color: '#051C60',
     margin: 10,
   },
-  text: {
-    color: 'gray',
+  form: {
+    width: '80%',
+  },
+  registerButton: {
+    backgroundColor: 'blue',
+    height: 40,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
     marginVertical: 10,
   },
-  link: {
-    color: '#FDB075',
+  signInButton: {
+    marginVertical: 10,
   },
 });
-
-
