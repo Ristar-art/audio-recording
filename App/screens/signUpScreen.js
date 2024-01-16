@@ -75,9 +75,9 @@ export default function SignUpScreen() {
           <Text style={{ color: "white" }}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
+        {/* <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
           <Text style={{ color: "#FDB075" }}>Have an account? Sign in</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   form: {
-    width: "80%",
+    width: "55vw",
   },
   registerButton: {
     backgroundColor: "blue",

@@ -61,7 +61,7 @@ export default function Home() {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <View
+          {/* <View
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -114,7 +114,7 @@ export default function Home() {
             text="Don't have an account? Create one"
             onPress={onSignUpPress}
             type="TERTIARY"
-          />
+          /> */}
         </View>
       ) : (
         <View style={{ flex: 1 }}>
@@ -137,7 +137,7 @@ export default function Home() {
         <TouchableOpacity onPress={onSignInPressed} style={styles.signInButton}>
           <Text style={{ color: 'white' }}>Sign In</Text>
         </TouchableOpacity>
-
+  
         <CustomButton
           text="Don't have an account? Create one"
           onPress={onSignUpPress}
@@ -190,19 +190,18 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '55vw',
-    height: 25,
+    height:"5vh",
     backgroundColor: 'white',
     borderRadius: 2,
     marginVertical: 5,
   },
   signInButton: {
-    backgroundColor: 'blue',
-    height: 25,
-    width: 300,
-    width: '55vw',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2,
-    marginVertical: 5,
+    backgroundColor: "blue",
+    height: 40,
+    width: "55vw",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    marginVertical: 10,
   },
 });
