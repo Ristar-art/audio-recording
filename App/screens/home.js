@@ -60,61 +60,10 @@ export default function Home() {
       {signedIn ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          {/* <View
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              height: "10vh",
-              marginBottom: 5,
-            }}
-          >
-            <TextInput
-              placeholder="user name"
-              value={username}
-              setValue={setUsername}
-              style={{
-                width: "55vw",
-                height: 25,
-                backgroundColor: "white",
-                borderRadius: 2,
-              }}
-            />
-            <TextInput
-              placeholder="Password"
-              value={password}
-              setValue={setPassword}
-              secureTextEntry={true}
-              style={{
-                width: "55vw",
-                height: 25,
-                backgroundColor: "white",
-                borderRadius: 2,
-              }}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={onSignInPressed}
-            style={{
-              backgroundColor: "blue",
-              height: 25,
-              width: 300,
-              width: "55vw",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 2,
-            }}
-          >
-            <Text style={{ color: "white" }}>Sigh In</Text>
-          </TouchableOpacity>
-
-          <CustomButton
-            text="Don't have an account? Create one"
-            onPress={onSignUpPress}
-            type="TERTIARY"
-          /> */}
+        >  
+        <TouchableOpacity onPress={onSignInPressed} style={styles.signInButton}>
+          <Text style={{ color: 'white' }}>View your recordings</Text>
+        </TouchableOpacity>
         </View>
       ) : (
         <View style={{ flex: 1 }}>
