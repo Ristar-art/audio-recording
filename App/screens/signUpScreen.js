@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import CustomInput from '../components/customInputs/customInputs';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import CustomInput from "../components/customInputs/customInputs";
 
 export default function SignUpScreen() {
   const navigation = useNavigation();
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordRepeat, setPasswordRepeat] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
 
   const onRegisterPressed = async () => {
-    // Assuming validation passes, store user details in AsyncStorage
     try {
+      // Validate input and check if passwords match
+      if (password !== passwordRepeat) {
+        console.log("Passwords do not match");
+        return;
+      }
+
+      // Assuming validation passes, store user details in AsyncStorage
       const userDetails = {
         username,
         email,
@@ -25,17 +31,17 @@ export default function SignUpScreen() {
       const userDetailsJSON = JSON.stringify(userDetails);
 
       // Store user details in AsyncStorage
-      await AsyncStorage.setItem('userDetails', userDetailsJSON);
+      await AsyncStorage.setItem("userDetails", userDetailsJSON);
 
-      console.log('User details stored successfully');
-      navigation.navigate('SignIn');
+      console.log("User details stored successfully");
+      navigation.navigate("Home");
     } catch (error) {
-      console.error('Error storing user details:', error);
+      console.error("Error storing user details:", error);
     }
   };
 
   const onSignInPress = () => {
-    navigation.navigate('SignIn');
+    navigation.navigate("SignIn");
   };
 
   return (
@@ -66,11 +72,11 @@ export default function SignUpScreen() {
           onPress={onRegisterPressed}
           style={styles.registerButton}
         >
-          <Text style={{ color: 'white' }}>Register</Text>
+          <Text style={{ color: "white" }}>Register</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onSignInPress} style={styles.signInButton}>
-          <Text style={{ color: '#FDB075' }}>Have an account? Sign in</Text>
+          <Text style={{ color: "#FDB075" }}>Have an account? Sign in</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -80,25 +86,25 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#051C60',
+    fontWeight: "bold",
+    color: "#051C60",
     margin: 10,
   },
   form: {
-    width: '80%',
+    width: "80%",
   },
   registerButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     height: 40,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 5,
     marginVertical: 10,
   },

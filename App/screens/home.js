@@ -1,31 +1,42 @@
-import react from "react";
-import { useNavigation } from "@react-navigation/native"; // Make sure to import this
-import { useState } from "react";
-import CustomInputs from "../components/customInputs/customInputs";
-import {
-  ImageBackground,
-  StyleSheet,
-  View,
-  Button,
-  Dimensions,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import CustomButton from "../components/customButtons/customButtons";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, TextInput,StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import CustomButton from '../components/customButtons/customButtons';
 
-export default function Home({ navigation }) {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+export default function Home() {
+  const navigation = useNavigation();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [signedIn, setSignedIn] = useState(false);
 
-  const onSignInPressed = () => {
-    // validate user
-    navigation.navigate("Record");
+  const onSignInPressed = async () => {
+    try {
+      // Fetch stored user details from AsyncStorage
+      const storedUserDetailsJSON = await AsyncStorage.getItem('userDetails');
+
+      if (storedUserDetailsJSON) {
+        const storedUserDetails = JSON.parse(storedUserDetailsJSON);
+
+        // Check if entered credentials match stored credentials
+        if (username === storedUserDetails.username && password === storedUserDetails.password) {
+          setSignedIn(true);
+          // Navigate to the desired screen after successful sign-in
+          navigation.navigate('Record');
+        } else {
+          console.log('Invalid credentials');
+        }
+      } else {
+        console.log('User not registered');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
   };
 
   const onSignUpPress = () => {
-    navigation.navigate("SignUpScreen");
+    navigation.navigate('SignUpScreen');
   };
 
   return (
@@ -107,16 +118,35 @@ export default function Home({ navigation }) {
         </View>
       ) : (
         <View style={{ flex: 1 }}>
-          <TouchableOpacity
-          
-            onPress={() => setSignedIn(true)}
-          >
-            <Text style={{ color: "white" }}>Sign in</Text>
-          </TouchableOpacity>
+        <View>
+          <TextInput
+            placeholder="Username"
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry
+            style={styles.input}
+          />
         </View>
-      )}
-    </View>
-  );
+
+        <TouchableOpacity onPress={onSignInPressed} style={styles.signInButton}>
+          <Text style={{ color: 'white' }}>Sign In</Text>
+        </TouchableOpacity>
+
+        <CustomButton
+          text="Don't have an account? Create one"
+          onPress={onSignUpPress}
+          type="TERTIARY"
+        />
+      </View>
+    )}
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -157,5 +187,22 @@ const styles = StyleSheet.create({
       width: 120,
       height: 40,
     },
+  },
+  input: {
+    width: '55vw',
+    height: 25,
+    backgroundColor: 'white',
+    borderRadius: 2,
+    marginVertical: 5,
+  },
+  signInButton: {
+    backgroundColor: 'blue',
+    height: 25,
+    width: 300,
+    width: '55vw',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2,
+    marginVertical: 5,
   },
 });
